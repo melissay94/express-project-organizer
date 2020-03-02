@@ -1,6 +1,8 @@
 {
   "development": {
-    "database": "project_organizer_development",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "organizer",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

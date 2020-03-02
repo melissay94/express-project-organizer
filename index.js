@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
     res.render('main/index', { projects: projects })
   })
   .catch((error) => {
-    console.log('Error in GET /', error)
     res.status(400).render('main/404')
   })
 })

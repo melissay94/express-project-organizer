@@ -11,10 +11,21 @@ router.post('/', (req, res) => {
     description: req.body.description
   })
   .then((project) => {
-    res.redirect('/')
+    db.category.findOrCreate({
+      where: { name: req.body.category }
+    }).then(([category, created]) => {
+      project.addCategory(category).then(category => {
+        res.redirect('/')
+      }).catch(err => {
+        res.send(`Could not add category ${req.body.category} to project ${req.body.name}`, err);
+      })
+    }).catch(err => {
+      res.send(`Could not create or find category ${req.body.category}`, err);
+    });
   })
   .catch((error) => {
-    res.status(400).render('main/404')
+    console.log(error);
+    res.status(400).render('main/404');
   })
 })
 
@@ -29,8 +40,12 @@ router.get('/:id', (req, res) => {
     where: { id: req.params.id }
   })
   .then((project) => {
-    if (!project) throw Error()
-    res.render('projects/show', { project: project })
+    if (!project) throw Error();
+    project.getCategories().then(categories => {
+      res.render('projects/show', { project: project, categories: categories });
+    }).catch(err => {
+      console.log("Couldn't get categories");
+    });
   })
   .catch((error) => {
     res.status(400).render('main/404')
